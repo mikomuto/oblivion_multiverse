@@ -30,3 +30,20 @@
 *.exe
 *.out
 *.app
+
+# OBSE
+common/
+obse/
+obse_plugin_example/
+obse.ini
+obse_command_doc.html
+obse_whatsnew.txt
+README.MD
+
+# Releases
+Release/
+Debug/
+
+# VS
+.vs/
+*.yml
