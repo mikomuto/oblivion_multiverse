@@ -11,15 +11,32 @@ IDebugLog		gLog("./Data/OBSE/Plugins/oblivion_multiverse.log");
 PluginHandle				g_pluginHandle = kPluginHandle_Invalid;
 
 
-
 /**********************
 * Command functions
 **********************/
+
+bool Cmd_OMServerConnect_Execute(COMMAND_ARGS)
+{
+	return serverConnect();
+}
 
 
 /**************************
 * Command definitions
 **************************/
+
+static CommandInfo kOMServerConnectCommand =
+{
+	"OMServerConnect",
+	"OMSC",
+	0,
+	"Connect to server",
+	0,		// requires parent obj
+	0,		// doesn't have params
+	NULL,	// no param table
+	Cmd_OMServerConnect_Execute
+};
+
 
 /*************************
 	Messaging API
@@ -33,12 +50,15 @@ void MessageHandler(OBSEMessagingInterface::Message* msg)
 	{
 	case OBSEMessagingInterface::kMessage_LoadGame:
 		_MESSAGE("OblivionMultiverse received LoadGame mesage");
+		initializeClient();
 		break;
 	case OBSEMessagingInterface::kMessage_ExitGame:
 		_MESSAGE("OblivionMultiverse received ExitGame message");
+		discardClient();
 		break;
 	case OBSEMessagingInterface::kMessage_ExitToMainMenu:
 		_MESSAGE("OblivionMultiverse received ExitToMainMenu message");
+		discardClient();
 		break;
 	case OBSEMessagingInterface::kMessage_ExitGame_Console:
 		_MESSAGE("OblivionMultiverse received quit game from console message");
@@ -96,6 +116,13 @@ extern "C" {
 
 		// register commands
 		obse->SetOpcodeBase(0x2000); //TODO set release OpcodeBase
+		obse->RegisterCommand(&kOMServerConnectCommand);
+
+		//initialize enet library
+		if (enet_initialize() != 0)
+		{
+			_MESSAGE("ENet library initialization failed\n");
+		}
 
 		// register to receive messages from OBSE
 		OBSEMessagingInterface* msgIntfc = (OBSEMessagingInterface*)obse->QueryInterface(kInterface_Messaging);

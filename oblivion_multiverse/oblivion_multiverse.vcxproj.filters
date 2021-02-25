@@ -49,6 +49,9 @@
     <ClCompile Include="dllmain.c">
       <Filter>Source</Filter>
     </ClCompile>
+    <ClCompile Include="OMNetwork.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\obse\obse\GameActorValues.h">
@@ -100,6 +103,9 @@
       <Filter>obse</Filter>
     </ClInclude>
     <ClInclude Include="main.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="OMNetwork.h">
       <Filter>Headers</Filter>
     </ClInclude>
   </ItemGroup>

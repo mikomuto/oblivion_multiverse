@@ -47,3 +47,7 @@ Debug/
 # VS
 .vs/
 *.yml
+
+# external
+include/
+library/

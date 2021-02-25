@@ -7,20 +7,36 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "oblivion_multiverse", "obli
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "common", "..\common\common.vcxproj", "{20C6411C-596F-4B85-BE4E-8BC91F59D8A6}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "oblivion_multiverse_server", "..\oblivion_multiverse_server\oblivion_multiverse_server.vcxproj", "{E78047A2-4725-4818-B31D-215A030EAAF4}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
+		Debug|x64 = Debug|x64
 		Release|Win32 = Release|Win32
+		Release|x64 = Release|x64
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{D4DDA734-7E93-4581-8F82-32BB738F69FE}.Debug|Win32.ActiveCfg = Debug|Win32
 		{D4DDA734-7E93-4581-8F82-32BB738F69FE}.Debug|Win32.Build.0 = Debug|Win32
+		{D4DDA734-7E93-4581-8F82-32BB738F69FE}.Debug|x64.ActiveCfg = Debug|Win32
 		{D4DDA734-7E93-4581-8F82-32BB738F69FE}.Release|Win32.ActiveCfg = Release|Win32
 		{D4DDA734-7E93-4581-8F82-32BB738F69FE}.Release|Win32.Build.0 = Release|Win32
+		{D4DDA734-7E93-4581-8F82-32BB738F69FE}.Release|x64.ActiveCfg = Release|Win32
 		{20C6411C-596F-4B85-BE4E-8BC91F59D8A6}.Debug|Win32.ActiveCfg = Debug|Win32
 		{20C6411C-596F-4B85-BE4E-8BC91F59D8A6}.Debug|Win32.Build.0 = Debug|Win32
+		{20C6411C-596F-4B85-BE4E-8BC91F59D8A6}.Debug|x64.ActiveCfg = Debug|Win32
 		{20C6411C-596F-4B85-BE4E-8BC91F59D8A6}.Release|Win32.ActiveCfg = Release|Win32
 		{20C6411C-596F-4B85-BE4E-8BC91F59D8A6}.Release|Win32.Build.0 = Release|Win32
+		{20C6411C-596F-4B85-BE4E-8BC91F59D8A6}.Release|x64.ActiveCfg = Release|Win32
+		{E78047A2-4725-4818-B31D-215A030EAAF4}.Debug|Win32.ActiveCfg = Debug|Win32
+		{E78047A2-4725-4818-B31D-215A030EAAF4}.Debug|Win32.Build.0 = Debug|Win32
+		{E78047A2-4725-4818-B31D-215A030EAAF4}.Debug|x64.ActiveCfg = Debug|x64
+		{E78047A2-4725-4818-B31D-215A030EAAF4}.Debug|x64.Build.0 = Debug|x64
+		{E78047A2-4725-4818-B31D-215A030EAAF4}.Release|Win32.ActiveCfg = Release|Win32
+		{E78047A2-4725-4818-B31D-215A030EAAF4}.Release|Win32.Build.0 = Release|Win32
+		{E78047A2-4725-4818-B31D-215A030EAAF4}.Release|x64.ActiveCfg = Release|x64
+		{E78047A2-4725-4818-B31D-215A030EAAF4}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
