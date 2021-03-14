@@ -5,6 +5,8 @@
 #include <iomanip>
 #include <enet/enet.h>
 
+#include "om_config.h"
+
 #define MAXCLIENTS 12
 #define SUPER_VERSION 0
 #define MAIN_VERSION 0

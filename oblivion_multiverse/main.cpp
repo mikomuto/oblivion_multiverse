@@ -118,6 +118,9 @@ extern "C" {
 		obse->SetOpcodeBase(0x2000); //TODO set release OpcodeBase
 		obse->RegisterCommand(&kOMServerConnectCommand);
 
+		//load ini
+		OMLoadConfig;
+
 		//initialize enet library
 		if (enet_initialize() != 0)
 		{

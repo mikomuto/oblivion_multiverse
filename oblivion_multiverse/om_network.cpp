@@ -1,4 +1,4 @@
-#include "OMNetwork.h"
+#include "om_network.h"
 
 ENetAddress address;
 ENetHost* client;
@@ -33,8 +33,8 @@ void discardClient()
 bool serverConnect() {
 	if (!isConnected) {
 		/* Connect to some.server.net:1234. */
-		enet_address_set_host(&address, "localhost");
-		address.port = 41805;
+		enet_address_set_host(&address, ServerAddress);
+		address.port = ServerPort;
 		/* Initiate the connection, allocating the two channels 0 and 1. */
 		peer = enet_host_connect(client, &address, 2, 0);
 

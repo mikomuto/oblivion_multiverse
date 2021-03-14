@@ -56,7 +56,7 @@
     <OutDir>$(SolutionDir)$(Configuration)\</OutDir>
     <IntDir>$(Configuration)\</IntDir>
     <LinkIncremental>false</LinkIncremental>
-    <PostBuildEventUseInBuild>true</PostBuildEventUseInBuild>
+    <PostBuildEventUseInBuild>false</PostBuildEventUseInBuild>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -136,7 +136,8 @@
       </ForcedIncludeFiles>
     </ClCompile>
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="OMNetwork.cpp" />
+    <ClCompile Include="om_config.cpp" />
+    <ClCompile Include="om_network.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\obse\obse\GameActorValues.h" />
@@ -156,7 +157,8 @@
     <ClInclude Include="..\obse\obse\Script.h" />
     <ClInclude Include="..\obse\obse\Utilities.h" />
     <ClInclude Include="main.h" />
-    <ClInclude Include="OMNetwork.h" />
+    <ClInclude Include="om_config.h" />
+    <ClInclude Include="om_network.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\obse\obse\GameRTTI_1_1.inl" />

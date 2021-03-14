@@ -5,7 +5,7 @@
 
 #include <enet/enet.h>
 
-#include <OMNetwork.h>
+#include "om_network.h"
 
 #include <string>
 

@@ -27,6 +27,9 @@ void serverOutput(char* message)
 
 int main()
 {
+	//load ini
+	OMLoadConfig();
+	
 	//initialize enet library
 	if (enet_initialize() != 0)
 	{
@@ -43,12 +46,12 @@ int main()
 	/* A specific host address can be specified by   */
 	/* enet_address_set_host (& address, "x.x.x.x"); */
 	address.host = ENET_HOST_ANY;
-	/* Bind the server to port 41805. */
-	address.port = 41805;
+	/* Bind the server to port */
+	address.port = ServerPort;
 
 	//create server
 	server = enet_host_create(& address /* the address to bind the server host to */,
-		32      /* allow up to 32 clients and/or outgoing connections */,
+		MaxClients      /* allow up to x clients and/or outgoing connections */,
 		2      /* allow up to 2 channels to be used, 0 and 1 */,
 		0      /* assume any amount of incoming bandwidth */,
 		0      /* assume any amount of outgoing bandwidth */);

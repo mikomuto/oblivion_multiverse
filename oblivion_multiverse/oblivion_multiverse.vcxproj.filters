@@ -49,7 +49,10 @@
     <ClCompile Include="dllmain.c">
       <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="OMNetwork.cpp">
+    <ClCompile Include="om_network.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="om_config.cpp">
       <Filter>Source</Filter>
     </ClCompile>
   </ItemGroup>
@@ -105,7 +108,10 @@
     <ClInclude Include="main.h">
       <Filter>Headers</Filter>
     </ClInclude>
-    <ClInclude Include="OMNetwork.h">
+    <ClInclude Include="om_network.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="om_config.h">
       <Filter>Headers</Filter>
     </ClInclude>
   </ItemGroup>

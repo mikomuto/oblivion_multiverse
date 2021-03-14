@@ -18,9 +18,15 @@
     <ClCompile Include="oblivion_multiverse_server.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="om_config.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="oblivion_multiverse_server.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="om_config.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
