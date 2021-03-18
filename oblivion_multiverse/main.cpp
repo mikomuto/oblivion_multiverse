@@ -6,9 +6,11 @@
 #include "obse_editor/EditorAPI.h"
 #endif
 
-IDebugLog		gLog("./Data/OBSE/Plugins/oblivion_multiverse.log");
-
-PluginHandle				g_pluginHandle = kPluginHandle_Invalid;
+IDebugLog gLog("./Data/OBSE/Plugins/oblivion_multiverse.log");
+PluginHandle g_pluginHandle = kPluginHandle_Invalid;
+OBSEScriptInterface* g_scriptIntfc = NULL;
+TESObjectREFR* ActorList[32];
+UInt32 SpawnID[32];
 
 
 /**********************
@@ -18,6 +20,41 @@ PluginHandle				g_pluginHandle = kPluginHandle_Invalid;
 bool Cmd_OMServerConnect_Execute(COMMAND_ARGS)
 {
 	return serverConnect();
+}
+
+bool Cmd_OMTrackActor_Execute(COMMAND_ARGS)
+{
+	if (!thisObj)
+	{
+		Console_Print("OMTrackActor: No actor reference given");
+		return true;
+	}
+	if (thisObj->IsActor())
+	{
+		Actor* ActorBuf = (Actor*)thisObj;
+		UInt32 actorNumber = ActorBuf->refID;
+		for (int i = 0; i < MaxPlayers; i++)
+		{
+			if (SpawnID[i] == actorNumber)
+			{
+				// conflict here
+				Console_Print("OMTrackActor: Actor already tracked");
+				return false;
+				break;
+			}
+		}
+		for (int i = 0; i < MaxPlayers; i++)
+		{
+			if (!SpawnID[i])
+			{
+				SpawnID[i] = actorNumber;
+				Console_Print("Spawn %i ID: %u", i, SpawnID[i]);
+				ActorList[i] = thisObj;
+				return true;
+			}
+		}
+	}
+	return true;
 }
 
 
@@ -37,6 +74,17 @@ static CommandInfo kOMServerConnectCommand =
 	Cmd_OMServerConnect_Execute
 };
 
+static CommandInfo kOMTrackActorCommand =
+{
+	"OMTrackActor",
+	"OMTA",
+	0,
+	"Track an actor",
+	0,		// requires parent obj
+	0,		// doesn't have params
+	NULL,	// no param table
+	Cmd_OMTrackActor_Execute
+};
 
 /*************************
 	Messaging API
@@ -96,7 +144,7 @@ extern "C" {
 				return false;
 			}
 #endif
-
+			g_scriptIntfc = (OBSEScriptInterface*)obse->QueryInterface(kInterface_Script);
 		}
 		else
 		{
@@ -117,6 +165,7 @@ extern "C" {
 		// register commands
 		obse->SetOpcodeBase(0x2000); //TODO set release OpcodeBase
 		obse->RegisterCommand(&kOMServerConnectCommand);
+		obse->RegisterCommand(&kOMTrackActorCommand);
 
 		//load ini
 		OMLoadConfig;
@@ -127,23 +176,19 @@ extern "C" {
 			_MESSAGE("ENet library initialization failed\n");
 		}
 
+		if (!obse->isEditor)
+		{
+			// register to use string var interface
+			// this allows plugin commands to support '%z' format specifier in format string arguments
+			OBSEStringVarInterface* g_Str = (OBSEStringVarInterface*)obse->QueryInterface(kInterface_StringVar);
+			g_Str->Register(g_Str);
+		}
+
 		// register to receive messages from OBSE
 		OBSEMessagingInterface* msgIntfc = (OBSEMessagingInterface*)obse->QueryInterface(kInterface_Messaging);
 		msgIntfc->RegisterListener(g_pluginHandle, "OBSE", MessageHandler);
 		g_msg = msgIntfc;
 
-		// get command table, if needed
-		OBSECommandTableInterface* cmdIntfc = (OBSECommandTableInterface*)obse->QueryInterface(kInterface_CommandTable);
-		if (cmdIntfc) {
-#if 0	// enable the following for loads of log output
-			for (const CommandInfo* cur = cmdIntfc->Start(); cur != cmdIntfc->End(); ++cur) {
-				_MESSAGE("%s", cur->longName);
-			}
-#endif
-		}
-		else {
-			_MESSAGE("Couldn't read command table");
-		}
 		return true;
 	}
 

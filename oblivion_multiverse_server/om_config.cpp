@@ -22,10 +22,12 @@ void OMLoadConfig()
 		// get port
 		const char* pValue = ini.GetValue("MAIN",
 			"PORT", "41805");
+		ServerPort = atoi(pValue);
 
 		// get max clients
 		const char* mcValue = ini.GetValue("MAIN",
 			"MAX_CLIENTS", "32");
+		MaxClients = atoi(mcValue);
 
 		// get password
 		const char* pwdValue = ini.GetValue("MAIN",
@@ -74,7 +76,7 @@ void OMUpdateConfig()
 
 		//update max clients
 		char buffer_mc[3];
-		_itoa_s(ServerPort, buffer_mc, 10);
+		_itoa_s(MaxClients, buffer_mc, 10);
 		ini.SetValue("MAIN", "MAX_CLIENTS", buffer_mc);
 
 		//update password

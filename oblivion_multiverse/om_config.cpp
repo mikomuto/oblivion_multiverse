@@ -3,6 +3,7 @@
 char ServerPassword[32];
 char ServerAddress[16];
 unsigned short ServerPort = 0;
+int MaxPlayers = 0;
 
 void OMLoadConfig()
 {
@@ -27,6 +28,7 @@ void OMLoadConfig()
 		// get port
 		const char* pValue = ini.GetValue("MAIN",
 			"PORT", "41805");
+		ServerPort = atoi(pValue);
 
 		// get password
 		const char* pwdValue = ini.GetValue("MAIN",
@@ -37,6 +39,15 @@ void OMLoadConfig()
 		}
 		else {
 			strncpy_s(ServerPassword, pwdValue, strlen(pwdValue));
+		}
+
+		// get max players to sync
+		const char* maValue = ini.GetValue("MAIN",
+			"MAX_PLAYERS", "12");
+		MaxPlayers = atoi(maValue);
+		// fix max actors if over 32
+		if (MaxPlayers > 32) {
+			MaxPlayers = 32;
 		}
 	}
 	//if we don't have a config, make it
@@ -53,6 +64,12 @@ void OMLoadConfig()
 
 		//initial password
 		ini.SetValue("MAIN", "PASSWORD", "");
+
+		//initial max actors
+		MaxPlayers = 12;
+		char buffer_mc[3];
+		_itoa_s(MaxPlayers, buffer_mc, 10);
+		ini.SetValue("MAIN", "MAX_PLAYERS", buffer_mc);
 
 		// write initial ini
 		long rc = ini.SaveFile("./Data/OBSE/Plugins/oblivion_multiverse.ini");
@@ -76,6 +93,11 @@ void OMUpdateConfig()
 
 		//update password
 		ini.SetValue("MAIN", "PASSWORD", ServerPassword);
+
+		//update max players
+		char buffer_mc[3];
+		_itoa_s(MaxPlayers, buffer_mc, 10);
+		ini.SetValue("MAIN", "MAX_PLAYERS", buffer_mc);
 
 		// write ini
 		long rc = ini.SaveFile("./Data/OBSE/Plugins/oblivion_multiverse.ini");
