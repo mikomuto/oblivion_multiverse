@@ -94,11 +94,13 @@
 		<y> <!-- DarN 725 -->
 			<copy src="oblivion_logo" trait="y" />
 			<add src="oblivion_logo" trait="height" />
+			<add> 6 </add>
 		</y>
 		<locus> &true; </locus>
 		
 		<rect name="main_mv">
 <include src="darn\button_floating.xml"/>
+			<height> 60 </height>
 			<visible> &true; </visible>
 			<id> 10 </id>
 			<string> Multiverse </string>
@@ -115,6 +117,7 @@
 		
 		<rect name="main_continue">
 <include src="darn\button_floating.xml"/>
+			<height> 60 </height>
 			<visible> &true; </visible>
 			<id> 2 </id>
 			<string> <copy src="strings()" trait="_continue"/> </string>
@@ -133,6 +136,7 @@
 		
 		<rect name="main_new">
 <include src="darn\button_floating.xml"/>
+			<height> 60 </height>
 			<visible> &true; </visible>
 			<id> 3 </id>
 			<string> <copy src="strings()" trait="_new"/> </string>
@@ -153,6 +157,7 @@
 		
 		<rect name="main_load">
 <include src="darn\button_floating.xml"/>
+			<height> 60 </height>
 			<visible> &true; </visible>
 			<id> 4 </id>
 			<string> <copy src="strings()" trait="_load"/> </string>
@@ -174,6 +179,7 @@
 		
 		<rect name="main_options">
 <include src="darn\button_floating.xml"/>
+			<height> 60 </height>
 			<visible> &true; </visible>
 			<id> 5 </id>
 			<string> <copy src="strings()" trait="_options"/> </string>
@@ -195,6 +201,7 @@
 		
 		<rect name="main_credits">
 <include src="darn\button_floating.xml"/>
+			<height> 60 </height>
 			<visible> &true; </visible>
 			<id> 6 </id>
 			<string> <copy src="strings()" trait="_credits"/> </string>
@@ -216,6 +223,7 @@
 		
 		<rect name="main_exit">
 <include src="darn\button_floating.xml"/>
+			<height> 60 </height>
 			<visible> &true; </visible>
 			<id> 7 </id>
 			<string> <copy src="strings()" trait="_exit"/> </string>
