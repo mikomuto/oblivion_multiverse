@@ -1,0 +1,321 @@
+<!-- main_menu.xml -->
+<!-- DarN Version 1.3 -->
+
+<menu name="MainMenu">
+	<class> &MainMenu; </class>
+	<stackingtype> &no_click_past; </stackingtype>
+	<visible> &true; </visible>
+	<alpha>	0 </alpha>
+	<x> 0 </x>
+	<y> 0 </y>
+	<depth> 1 </depth>
+	<locus> &true; </locus>
+	
+	<user0> &true; </user0>		<!-- is the logo visible set by code -->
+	<user1> &true; </user1>		<!-- are the buttons visible set by code -->
+	<user2> &false; </user2>	<!-- is Press Start visible set by code -->
+	<user3> 255 </user3>		<!-- alpha value set by animated code -->
+	<user4> 3 </user4>			<!-- how many seconds to fade from bink logo to real logo -->
+	
+	<_buttonwidth> 200 </_buttonwidth>
+	<_duiv> DarNified UI v1.3.2 </_duiv>
+
+	<image name="backdrop">
+		<id> 8 </id>
+		<visible> &false; </visible>
+		<filename> Menus\Loading\loading_background.dds </filename>
+		<depth> 1 </depth>
+		<x>
+			<copy src="screen()" trait="width"/>
+			<div> 2 </div>
+			<sub src="me()" trait="_center_width"/>
+		</x>
+		<y>
+			<copy src="screen()" trait="height"/>
+			<div> 2 </div>
+			<sub src="me()" trait="_center_height"/>
+		</y>
+		<width> 1280 </width>
+		<height> 960 </height>
+		<zoom> -1 </zoom>
+		<locus> &true; </locus>
+		<_center_width>
+			<copy src="me()" trait="width"/> 
+			<div> 2 </div>
+		</_center_width>
+		<_center_height>
+			<copy src="me()" trait="height"/>
+			<div> 2 </div>
+		</_center_height>
+		
+	</image>
+	<image name="oblivion_logo">
+		<visible> <copy src="MainMenu" trait="user0"/> </visible>
+		<filename> Menus\Loading\tes_oblivion_logo_final.dds </filename>
+		<depth> 2 </depth>
+		<zoom> -1 </zoom>
+		<width> 748 </width>
+		<height> 159 </height>
+		<x>
+			<copy src="screen()" trait="width"/>
+			<sub src="me()" trait="width"/>
+			<div> 2 </div>
+			<add> 3 </add>
+		</x>
+		<y>
+			<copy src="screen()" trait="height"/>
+			<div> 5 </div> <!-- DarN 4 -->
+		</y>
+		<locus> &true; </locus>
+		
+		<image name="oblivion_logo">
+			<visible> <copy src="MainMenu" trait="user0"/> </visible>
+			<filename> Menus\Loading\tes_oblivion_logo_bink.dds </filename>
+			<depth> 2 </depth>
+			<zoom> -1 </zoom>
+			<alpha> <copy src="MainMenu" trait="user3"/> </alpha>
+			<width> 760 </width>
+			<height> 169 </height>
+			<x> -5 </x>
+			<y> -5 </y>
+		</image>
+
+	</image>
+	
+	<rect name="button_layout">
+		<visible> <copy src="MainMenu" trait="user1"/> </visible>
+		<depth> 10 </depth>
+		<height> <copy src="main_exit" trait="_end"/> </height>
+		<x>
+			<copy src="screen()" trait="width"/>
+			<sub src="me()" trait="width"/>
+			<div> 2 </div>
+		</x>
+		<y> <!-- DarN 725 -->
+			<copy src="oblivion_logo" trait="y" />
+			<add src="oblivion_logo" trait="height" />
+		</y>
+		<locus> &true; </locus>
+		
+		<rect name="main_mv">
+<include src="darn\button_floating.xml"/>
+			<visible> &true; </visible>
+			<id> 10 </id>
+			<string> Multiverse </string>
+			<x> <copy> 0 </copy>
+				<sub src="me()" trait="width" />
+				<div> 2 </div>
+			</x>
+			<y>	0 </y>
+			<clicksound> 1 </clicksound>
+			<xleft> <ref src="main_exit" trait="mouseover"/> </xleft>
+			<xright> <ref src="main_continue" trait="mouseover"/> </xright>
+		</rect>
+		
+		
+		<rect name="main_continue">
+<include src="darn\button_floating.xml"/>
+			<visible> &true; </visible>
+			<id> 2 </id>
+			<string> <copy src="strings()" trait="_continue"/> </string>
+			<x> <!-- DarN 0 -->
+				<copy> 0 </copy>
+				<sub src="me()" trait="width" />
+				<div> 2 </div>
+			</x>
+			<y><copy src="main_continue" trait="height"/>
+				
+			</y>
+			<clicksound> 1 </clicksound>
+			<xleft> <ref src="main_mv" trait="mouseover"/> </xleft>
+			<xright> <ref src="main_new" trait="mouseover"/> </xright>
+		</rect>
+		
+		<rect name="main_new">
+<include src="darn\button_floating.xml"/>
+			<visible> &true; </visible>
+			<id> 3 </id>
+			<string> <copy src="strings()" trait="_new"/> </string>
+			<x>
+				<copy> 0 </copy>
+				<sub src="me()" trait="width" />
+				<div> 2 </div>
+			</x>
+			<y>
+				<copy src="main_continue" trait="height"/>
+				
+				<onlyif src="main_continue" trait="visible"/>
+				<add src="main_continue" trait="y"/>
+			</y>
+			<xleft>  <ref src="main_continue" trait="mouseover"/> </xleft>
+			<xright> <ref src="main_load" trait="mouseover"/> </xright>
+		</rect>
+		
+		<rect name="main_load">
+<include src="darn\button_floating.xml"/>
+			<visible> &true; </visible>
+			<id> 4 </id>
+			<string> <copy src="strings()" trait="_load"/> </string>
+			<x>
+				<copy> 0 </copy>
+				<sub src="me()" trait="width" />
+				<div> 2 </div>
+			</x>
+			<y>
+				<copy src="main_new" trait="height"/>
+				
+				<onlyif src="main_new" trait="visible"/>
+				<add src="main_new" trait="y"/>
+			</y>
+			<clicksound> 1 </clicksound>
+			<xleft>  <ref src="main_new" trait="mouseover"/> </xleft>
+			<xright> <ref src="main_options" trait="mouseover"/> </xright>
+		</rect>
+		
+		<rect name="main_options">
+<include src="darn\button_floating.xml"/>
+			<visible> &true; </visible>
+			<id> 5 </id>
+			<string> <copy src="strings()" trait="_options"/> </string>
+			<x>
+				<copy> 0 </copy>
+				<sub src="me()" trait="width" />
+				<div> 2 </div>
+			</x>
+			<y> 
+				<copy src="main_load" trait="height"/>
+				
+				<onlyif src="main_load" trait="visible"/>
+				<add src="main_load" trait="y"/>
+			</y>
+			<clicksound> 1 </clicksound>
+			<xleft>  <ref src="main_load" trait="mouseover"/> </xleft>
+			<xright> <ref src="main_credits" trait="mouseover"/> </xright>
+		</rect>
+		
+		<rect name="main_credits">
+<include src="darn\button_floating.xml"/>
+			<visible> &true; </visible>
+			<id> 6 </id>
+			<string> <copy src="strings()" trait="_credits"/> </string>
+			<x>
+				<copy> 0 </copy>
+				<sub src="me()" trait="width" />
+				<div> 2 </div>
+			</x>
+			<y>
+				<copy src="main_options" trait="height"/>
+				
+				<onlyif src="main_options" trait="visible"/>
+				<add src="main_options" trait="y"/>
+			</y>
+			<clicksound> 1 </clicksound>
+			<xleft>  <ref src="main_options" trait="mouseover"/> </xleft>
+			<xright> <ref src="main_exit" trait="mouseover"/> </xright>
+		</rect>
+		
+		<rect name="main_exit">
+<include src="darn\button_floating.xml"/>
+			<visible> &true; </visible>
+			<id> 7 </id>
+			<string> <copy src="strings()" trait="_exit"/> </string>
+			<clicksound> 1 </clicksound>
+			<x>
+				<copy> 0 </copy>
+				<sub src="me()" trait="width" />
+				<div> 2 </div>
+			</x>
+			<y>
+				<copy src="main_credits" trait="height"/>
+				
+				<onlyif src="main_credits" trait="visible"/>
+				<add src="main_credits" trait="y"/>
+			</y>
+			<xleft>  <ref src="main_credits" trait="mouseover"/> </xleft>
+			<xright>  <ref src="main_mv" trait="mouseover"/> </xright>
+			<_end>
+				<copy src="me()" trait="height"/>
+				<onlyif src="me()" trait="visible"/>
+				<add src="me()" trait="y"/>
+			</_end>
+		</rect>
+	</rect>
+
+	<image name="vHover_img">
+		<id> &generic; </id>
+		<target> &true; </target>
+		<filename> Menus\darn\omg.dds </filename>
+		<alpha>
+			<copy> 120 </copy>
+			<add>
+				<copy> 135 </copy>
+				<onlyif>
+					<copy src="me()" trait="mouseover" />
+					<eq> 1 </eq>
+				</onlyif>
+			</add>
+		</alpha>
+		<x> 10 </x>
+		<y> 910 </y>
+		<width> 32 </width>
+		<height> 32 </height>
+	</image>
+
+	<rect name="vInfo">
+		<locus> &true; </locus>
+		<x>
+			<copy src="vHover_img" trait="x" />
+			<add src="vHover_img" trait="width" />
+			<add> 10 </add>
+		</x>
+		<y> <copy src="vHover_img" trait="y" /> </y>
+		<height> <copy src="darnuiversion" trait="height"/> <mul> 2 </mul> </height>
+		<width> <copy src="darnuiversion" trait="width"/> </width>
+		<visible>
+			<copy src="vHover_img" trait="mouseover" />
+			<eq> 1 </eq>
+		</visible>
+		<!-- DarN DarNified UI version. -->
+		<text name="darnuiversion">
+			<red> 254 </red>
+			<green> 244 </green>
+			<blue> 183 </blue>
+			<font> 2 </font>
+			<depth> 10 </depth>
+			<x> 0 </x>
+			<y> 0 </y>
+			<string> <copy src="MainMenu" trait="_duiv" /> </string>
+		</text>
+
+		<text name="gametitle">
+			<alpha> <copy src="darnuiversion" trait="alpha" /> </alpha>
+			<red> <copy src="darnuiversion" trait="red" /> </red>
+			<green> <copy src="darnuiversion" trait="green" /> </green>
+			<blue> <copy src="darnuiversion" trait="blue" /> </blue>
+			<font> 2 </font>
+			<depth> 10 </depth>
+			<x> 0 </x>
+			<y> 20 </y>
+			<string> Oblivion v </string>
+		</text>
+		
+		<text name="version">
+			<id> 9 </id>
+			<alpha> <copy src="darnuiversion" trait="alpha" /> </alpha>
+			<red> <copy src="darnuiversion" trait="red" /> </red>
+			<green> <copy src="darnuiversion" trait="green" /> </green>
+			<blue> <copy src="darnuiversion" trait="blue" /> </blue>
+			<font> 2 </font> <!-- DarN 3 -->
+			<zoom> 100 </zoom> <!-- DarN 75 -->
+			<depth> 10 </depth>
+			<x> <!-- DarN 10 -->
+				<copy src="gametitle" trait="x" />
+				<add src="gametitle" trait="width" />
+				<add> 1 </add>
+			</x>
+			<y> 20 </y> <!-- DarN 935 -->
+			<string> Version </string>
+		</text>
+	</rect>
+
+</menu>

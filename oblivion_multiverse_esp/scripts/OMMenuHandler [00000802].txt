@@ -1,0 +1,17 @@
+scn OMMenuHandler
+float fQuestDelayTime
+
+begin menumode
+	If fQuestDelayTime != 0.01
+		Set fQuestDelayTime To 0.01
+	EndIf
+	; trigger when player clicks button ID 10 in main(ID:1044) *multiverse button
+	if (GetActiveMenuMode == 1044) 
+		if (GetActiveUIComponentID == 10)
+			if (GetMouseButtonPress 0 == 256)
+				; show multiverse menu
+				MessageBox"Multiverse config page needed"
+			endif
+		endif
+	endif
+end
