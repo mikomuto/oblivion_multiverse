@@ -81,30 +81,29 @@ int main()
 				puts("Connection succeeded.");
 				break;
 			case ENET_EVENT_TYPE_RECEIVE:
-				sprintf_s(message, "A packet of length %u containing %s was received from %s on channel %u.\n",
+				sprintf_s(message, "A packet of length %u containing %s was received from %u on channel %u.\n",
 					event.packet->dataLength,
 					event.packet->data,
-					event.peer->data,
+					event.peer->address.host,
 					event.channelID);
 				serverOutput(message);
 				/* Clean up the packet now that we're done using it. */
 				enet_packet_destroy(event.packet);
 				break;
 			case ENET_EVENT_TYPE_DISCONNECT:
-				sprintf_s(message, "%s disconnected\n", event.peer->data);
+				sprintf_s(message, "%u disconnected\n", event.peer->address.host);
 				serverOutput(message);
 				/* Reset the peer's client information. */
 				event.peer->data = NULL;
 			}
 		}
 	}
-
 	enet_host_destroy(server);
 	enet_deinitialize();
 }
 
 void serverStop() {
-
 	char message[] = "Shutdown request received\n";
 	serverOutput(message);
+	bServerAlive = false;
 }

@@ -12,6 +12,7 @@ void OMLoadConfig()
 	SI_Error ie = ini.LoadFile("./Data/OBSE/Plugins/oblivion_multiverse.ini");
 
 	if (!ie) {
+		_MESSAGE("Loading ini file");
 		// get all sections
 		CSimpleIniA::TNamesDepend sections;
 		ini.GetAllSections(sections);
@@ -52,6 +53,7 @@ void OMLoadConfig()
 	}
 	//if we don't have a config, make it
 	else {
+		_MESSAGE("Creating initial ini file");
 		//initial IP address
 		strncpy_s(ServerAddress, "127.0.0.1", 16);
 		ini.SetValue("MAIN", "SERVER_ADDRESS", "127.0.0.1");

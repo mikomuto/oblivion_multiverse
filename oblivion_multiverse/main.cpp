@@ -102,14 +102,18 @@ void MessageHandler(OBSEMessagingInterface::Message* msg)
 		break;
 	case OBSEMessagingInterface::kMessage_ExitGame:
 		_MESSAGE("OblivionMultiverse received ExitGame message");
+		serverDisconnect();
 		discardClient();
 		break;
 	case OBSEMessagingInterface::kMessage_ExitToMainMenu:
 		_MESSAGE("OblivionMultiverse received ExitToMainMenu message");
+		serverDisconnect();
 		discardClient();
 		break;
 	case OBSEMessagingInterface::kMessage_ExitGame_Console:
 		_MESSAGE("OblivionMultiverse received quit game from console message");
+		serverDisconnect();
+		discardClient();
 		break;
 	default:
 		//_MESSAGE("OblivionMultiverse received unknown message");
@@ -168,12 +172,12 @@ extern "C" {
 		obse->RegisterCommand(&kOMTrackActorCommand);
 
 		//load ini
-		OMLoadConfig;
+		OMLoadConfig();
 
 		//initialize enet library
 		if (enet_initialize() != 0)
 		{
-			_MESSAGE("ENet library initialization failed\n");
+			_MESSAGE("ENet library initialization failed");
 		}
 
 		if (!obse->isEditor)
