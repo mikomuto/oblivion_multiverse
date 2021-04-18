@@ -8,6 +8,29 @@ ENetPacket* packet;
 
 bool isConnected = false;
 
+void clientTick() {
+	//check for pending event(incoming packet)
+	enet_host_service(client, &event, 0);
+		switch (event.type)
+		{
+		case ENET_EVENT_TYPE_RECEIVE:
+			_MESSAGE("A packet of length %u containing %s was received from %s on channel %u.\n",
+				event.packet->dataLength,
+				event.packet->data,
+				event.peer->data,
+				event.channelID);
+			/* Clean up the packet now that we're done using it. */
+			enet_packet_destroy(event.packet);
+			break;
+
+		case ENET_EVENT_TYPE_DISCONNECT:
+			_MESSAGE("Server forced disconnect");
+			isConnected = false;
+			/* Reset the peer's client information. */
+			event.peer->data = NULL;
+		}
+}
+
 bool initializeClient()
 {
 	//initialize client
@@ -32,12 +55,12 @@ void discardClient()
 
 bool serverConnect() {
 	if (!isConnected) {
-		_MESSAGE("Connecting to %s : %u", ServerAddress, ServerPort);
+		_MESSAGE("Connecting to %s:%u", ServerAddress, ServerPort);
 		/* Connect to some.server.net:1234. */
-		enet_address_set_host(& address, ServerAddress);
+		enet_address_set_host(&address, ServerAddress);
 		address.port = ServerPort;
 		/* Initiate the connection, allocating the two channels 0 and 1. */
-		peer = enet_host_connect(client, & address, 2, 0);
+		peer = enet_host_connect(client, &address, 2, 0);
 
 		if (peer == NULL)
 		{
@@ -49,19 +72,20 @@ bool serverConnect() {
 			event.type == ENET_EVENT_TYPE_CONNECT)
 		{
 			// send identifier using a reliable packet on channel 0
-			std::string tmpident = "OMIDENT";
-			tmpident.append(std::to_string(SUPER_VERSION));
-			tmpident.append(std::to_string(MAIN_VERSION));
-			tmpident.append(std::to_string(SUB_VERSION));
-			const char* omidentifier = tmpident.c_str();
-			ENetPacket* packet = enet_packet_create(omidentifier, strlen(omidentifier) + 1, ENET_PACKET_FLAG_RELIABLE);
+			std::ostringstream SData;
+			{
+				cereal::BinaryOutputArchive Archive(SData);
+				Archive("OM",SUPER_VERSION, MAIN_VERSION, SUB_VERSION, CEREAL_NVP(ServerPassword));
+			}
+			std::string Out = SData.str();
+			ENetPacket* packet = enet_packet_create(Out.c_str(), Out.size(), ENET_PACKET_FLAG_RELIABLE);
 			// queue a packet for the peer over channel id 0
 			enet_peer_send(peer, 0, packet);
 			// flush to send
 			enet_host_flush(client);
 
 			isConnected = true;
-			_MESSAGE("Connected to  %s : %u", ServerAddress, ServerPort);
+			_MESSAGE("Connected");
 			return true;
 		}
 		else
@@ -80,7 +104,7 @@ bool serverDisconnect() {
 	if (isConnected) {
 		_MESSAGE("Disconnecting from server");
 		if (peer != NULL) {
-			enet_peer_disconnect(peer, 0);
+			enet_peer_disconnect_later(peer, 0);
 			/* Allow up to 3 seconds for the disconnect to succeed
 			 * and drop any packets received packets.
 			 */

@@ -4,6 +4,7 @@
 #include <ctime>
 #include <iomanip>
 #include <enet/enet.h>
+#include <cereal/archives/binary.hpp>
 
 #include "om_config.h"
 

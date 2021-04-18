@@ -17,6 +17,12 @@ UInt32 SpawnID[32];
 * Command functions
 **********************/
 
+bool Cmd_OMClientTick_Execute(COMMAND_ARGS)
+{
+	clientTick();
+	return true;
+}
+
 bool Cmd_OMServerConnect_Execute(COMMAND_ARGS)
 {
 	return serverConnect();
@@ -72,6 +78,18 @@ static CommandInfo kOMServerConnectCommand =
 	0,		// doesn't have params
 	NULL,	// no param table
 	Cmd_OMServerConnect_Execute
+};
+
+static CommandInfo kOMClientTickCommand =
+{
+	"OMClientTick",
+	"OMCT",
+	0,
+	"Perform tick",
+	0,		// requires parent obj
+	0,		// doesn't have params
+	NULL,	// no param table
+	Cmd_OMClientTick_Execute
 };
 
 static CommandInfo kOMTrackActorCommand =
@@ -169,6 +187,7 @@ extern "C" {
 		// register commands
 		obse->SetOpcodeBase(0x2000); //TODO set release OpcodeBase
 		obse->RegisterCommand(&kOMServerConnectCommand);
+		obse->RegisterCommand(&kOMClientTickCommand);
 		obse->RegisterCommand(&kOMTrackActorCommand);
 
 		//load ini

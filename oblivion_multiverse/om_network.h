@@ -7,4 +7,5 @@
 extern bool initializeClient();
 extern void discardClient();
 extern bool serverConnect();
+extern void clientTick();
 extern bool serverDisconnect();

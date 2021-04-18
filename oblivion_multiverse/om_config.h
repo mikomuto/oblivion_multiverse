@@ -2,6 +2,8 @@
 
 #include "include/simpleini-4.17/SimpleIni.h"
 
+#include <thread>
+
 //externals
 extern void OMLoadConfig();
 extern void OMUpdateConfig();
