@@ -7,6 +7,7 @@ bool bServerAlive = true;
 ENetAddress address;
 ENetHost* server;
 ENetEvent event;
+std::map<enet_uint32, bool> mapIsAuth;
 
 FILE* serverlog;
 errno_t err;
@@ -75,40 +76,56 @@ int main()
 			//convert event host ip address to human readable
 			char hrIP[INET_ADDRSTRLEN];
 			inet_ntop(AF_INET, &(event.peer->address.host), hrIP, INET_ADDRSTRLEN);
-			std::intptr_t isAuthenticated = reinterpret_cast<std::intptr_t>(event.peer->data);
 
 			switch (event.type)
 			{
-			case ENET_EVENT_TYPE_CONNECT:
+			case ENET_EVENT_TYPE_CONNECT: {
 				sprintf_s(message, "A new client connected from %s:%u\n", hrIP, event.peer->address.port);
 				serverOutput(message);
-				/* Store any relevant client information here. */
-				isAuthenticated = 0;
 				break;
-			case ENET_EVENT_TYPE_RECEIVE:
+			}
+			case ENET_EVENT_TYPE_RECEIVE: {
 				//check if authenticated
-				if (isAuthenticated != 1) {
-					char ident[3] = "";
-					int cSuperVersion;
-					int cMainVersion;
-					int cSubVersion;
-					char cPassword[32] = "";
+				std::map<enet_uint32, bool>::iterator itr = mapIsAuth.find(event.peer->address.host);
+				if (itr == mapIsAuth.end()) {
 					sprintf_s(message, "%s:%u is not authenticated\n", hrIP, event.peer->address.port);
 					serverOutput(message);
-
-					//check identifier
+				}
+				int flag;
+				int cSuperVersion;
+				int cMainVersion;
+				int cSubVersion;
+				char cPassword[32] = "";
+				//set packet flag
+				{
 					std::string tmpData(((char*)event.packet->data), event.packet->dataLength);
 					std::istringstream is(tmpData);
+					cereal::BinaryInputArchive Archive(is);
+					Archive(flag);
+				}
+				switch (flag) {
+				case 0: {
+					sprintf_s(message, "received auth packet from %s:%u\n", hrIP, event.peer->address.port);
+					serverOutput(message);
 					{
+						std::string tmpData(((char*)event.packet->data), event.packet->dataLength);
+						std::istringstream is(tmpData);
 						cereal::BinaryInputArchive Archive(is);
-						Archive(ident, cSuperVersion, cMainVersion, cSubVersion, cPassword);
+						Archive(flag, cSuperVersion, cMainVersion, cSubVersion, cPassword);
 					}
-					if (strcmp(ident, "OM") == 0 && cSuperVersion == SUPER_VERSION && cMainVersion == MAIN_VERSION && cSubVersion == SUB_VERSION) {
+					sprintf_s(message, "cereal did it's thing\n");
+					serverOutput(message);
+					if (cSuperVersion == SUPER_VERSION && cMainVersion == MAIN_VERSION && cSubVersion == SUB_VERSION) {
+						sprintf_s(message, "correct version\n");
+						serverOutput(message);
 						if (strcmp(cPassword, ServerPassword) == 0) {
-							isAuthenticated = 1;
+							sprintf_s(message, "correct password\n");
+							serverOutput(message);
 							sprintf_s(message, "%s:%u is now authenticated\n", hrIP, event.peer->address.port);
 							serverOutput(message);
-							/* Clean up the packet now that we're done using it. */
+							//add host to auth map
+							mapIsAuth.insert(std::pair<enet_uint32, bool>(event.peer->address.host, true));;
+							// Clean up the packet now that we're done using it
 							enet_packet_destroy(event.packet);
 							break;
 						}
@@ -116,44 +133,63 @@ int main()
 							//TODO send client error message before disconnet
 							sprintf_s(message, "%s:%u Wrong password\n", hrIP, event.peer->address.port);
 							serverOutput(message);
+							enet_peer_disconnect(event.peer, 0);
+							/* Clean up the packet now that we're done using it. */
+							enet_packet_destroy(event.packet);
+							break;
 						}
 					}
 					else {
 						//TODO send client error message before disconnet
 						sprintf_s(message, "%s:%u Version mismatch\n", hrIP, event.peer->address.port);
 						serverOutput(message);
-
+						enet_peer_disconnect(event.peer, 0);
+						/* Clean up the packet now that we're done using it. */
+						enet_packet_destroy(event.packet);
+						break;
 					}
-					//if we reach this point, something doesn't match, disconnect
-					enet_peer_disconnect(event.peer, 0);
-
+				case 1: {
+					sprintf_s(message, "A player position tracking packet of length %u containing %s was received from %s on channel %u\n",
+						event.packet->dataLength,
+						event.packet->data,
+						hrIP,
+						event.channelID);
+					serverOutput(message);
 					/* Clean up the packet now that we're done using it. */
 					enet_packet_destroy(event.packet);
 					break;
 				}
-				sprintf_s(message, "A packet of length %u containing %s was received from %s on channel %u\n",
-					event.packet->dataLength,
-					event.packet->data,
-					hrIP,
-					event.channelID);
-				serverOutput(message);
-				/* Clean up the packet now that we're done using it. */
-				enet_packet_destroy(event.packet);
-				break;
-			case ENET_EVENT_TYPE_DISCONNECT:
+				default: {
+					sprintf_s(message, "A packet of length %u containing %s was received from %s on channel %u\n",
+						event.packet->dataLength,
+						event.packet->data,
+						hrIP,
+						event.channelID);
+					serverOutput(message);
+					/* Clean up the packet now that we're done using it. */
+					enet_packet_destroy(event.packet);
+					break;
+				}
+				}
+				}
+			}
+			case ENET_EVENT_TYPE_DISCONNECT: {
 				sprintf_s(message, "%s:%u disconnected\n", hrIP, event.peer->address.port);
 				serverOutput(message);
 				/* Reset the peer's client information. */
 				event.peer->data = NULL;
+
+			}
 			}
 		}
 	}
-	enet_host_destroy(server);
-	enet_deinitialize();
 }
 
 void serverStop() {
 	char message[] = "Shutdown request received\n";
 	serverOutput(message);
 	bServerAlive = false;
+
+	enet_host_destroy(server);
+	enet_deinitialize();
 }

@@ -10,7 +10,7 @@
 
 #define MAXCLIENTS 12
 #define SUPER_VERSION 0
-#define MAIN_VERSION 0
-#define SUB_VERSION 1
+#define MAIN_VERSION 1
+#define SUB_VERSION 2
 #define RELEASE_CODENAME "Alpha Release" // The Name . Can be empty
 #define RELEASE_COMMENT "" // For betas and special builds only

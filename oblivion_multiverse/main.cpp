@@ -9,8 +9,7 @@
 IDebugLog gLog("./Data/OBSE/Plugins/oblivion_multiverse.log");
 PluginHandle g_pluginHandle = kPluginHandle_Invalid;
 OBSEScriptInterface* g_scriptIntfc = NULL;
-TESObjectREFR* ActorList[32];
-UInt32 SpawnID[32];
+std::map<TESObjectREFR*, UInt32> mapTrackedActors;
 
 
 /**********************
@@ -19,7 +18,8 @@ UInt32 SpawnID[32];
 
 bool Cmd_OMClientTick_Execute(COMMAND_ARGS)
 {
-	clientTick();
+	sendPlayerPOS();
+	incomingPacketHandler();
 	return true;
 }
 
@@ -32,33 +32,26 @@ bool Cmd_OMTrackActor_Execute(COMMAND_ARGS)
 {
 	if (!thisObj)
 	{
-		Console_Print("OMTrackActor: No actor reference given");
+		_MESSAGE("OMTrackActor: No actor reference given");
 		return true;
 	}
 	if (thisObj->IsActor())
 	{
-		Actor* ActorBuf = (Actor*)thisObj;
-		UInt32 actorNumber = ActorBuf->refID;
-		for (int i = 0; i < MaxPlayers; i++)
-		{
-			if (SpawnID[i] == actorNumber)
-			{
-				// conflict here
-				Console_Print("OMTrackActor: Actor already tracked");
-				return false;
-				break;
-			}
+		std::multimap<TESObjectREFR*, UInt32>::iterator it = mapTrackedActors.find(thisObj);
+		if (it == mapTrackedActors.end()) {
+			//actor not found. add
+			Actor* ActorBuf = (Actor*)thisObj;
+			mapTrackedActors[thisObj] = ActorBuf->refID;
+			_MESSAGE("OMTrackActor: Now tracking actor");
+			return true;
 		}
-		for (int i = 0; i < MaxPlayers; i++)
-		{
-			if (!SpawnID[i])
-			{
-				SpawnID[i] = actorNumber;
-				Console_Print("Spawn %i ID: %u", i, SpawnID[i]);
-				ActorList[i] = thisObj;
-				return true;
-			}
+		else {
+			// conflict here
+			_MESSAGE("OMTrackActor: Actor already tracked");
+			return false;
 		}
+		//mapTrackedActors.erase(it);
+
 	}
 	return true;
 }

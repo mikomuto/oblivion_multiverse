@@ -8,7 +8,7 @@ ENetPacket* packet;
 
 bool isConnected = false;
 
-void clientTick() {
+void incomingPacketHandler() {
 	//check for pending event(incoming packet)
 	enet_host_service(client, &event, 0);
 		switch (event.type)
@@ -29,6 +29,33 @@ void clientTick() {
 			/* Reset the peer's client information. */
 			event.peer->data = NULL;
 		}
+}
+
+void sendPlayerPOS() {
+	if (isConnected) {
+		_MESSAGE("connected and running sendPlayerPOS");
+		UInt32 cellID;
+		if ((*g_thePlayer)->parentCell->worldSpace)
+		{
+			cellID = (*g_thePlayer)->parentCell->worldSpace->refID;
+		}
+		else
+		{
+			cellID = (*g_thePlayer)->parentCell->refID;
+		}
+		// send position using a unreliable packet on channel 1
+		std::ostringstream SData;
+		{
+			cereal::BinaryOutputArchive Archive(SData);
+			Archive(OMPlayerPOS, cellID, (*g_thePlayer)->posX, (*g_thePlayer)->posY, (*g_thePlayer)->posZ, (*g_thePlayer)->rotX, (*g_thePlayer)->rotY, (*g_thePlayer)->rotZ);
+		}
+		std::string Out = SData.str();
+		ENetPacket* packet = enet_packet_create(Out.c_str(), Out.size(), ENET_PACKET_FLAG_UNRELIABLE_FRAGMENT);
+		// queue a packet for the peer over channel id 1
+		enet_peer_send(peer, 1, packet);
+		// flush to send
+		enet_host_flush(client);
+	}
 }
 
 bool initializeClient()
@@ -56,7 +83,7 @@ void discardClient()
 bool serverConnect() {
 	if (!isConnected) {
 		_MESSAGE("Connecting to %s:%u", ServerAddress, ServerPort);
-		/* Connect to some.server.net:1234. */
+		//Connect to server
 		enet_address_set_host(&address, ServerAddress);
 		address.port = ServerPort;
 		/* Initiate the connection, allocating the two channels 0 and 1. */
@@ -75,7 +102,7 @@ bool serverConnect() {
 			std::ostringstream SData;
 			{
 				cereal::BinaryOutputArchive Archive(SData);
-				Archive("OM",SUPER_VERSION, MAIN_VERSION, SUB_VERSION, CEREAL_NVP(ServerPassword));
+				Archive(OMIdentity,SUPER_VERSION, MAIN_VERSION, SUB_VERSION, ServerPassword);
 			}
 			std::string Out = SData.str();
 			ENetPacket* packet = enet_packet_create(Out.c_str(), Out.size(), ENET_PACKET_FLAG_RELIABLE);
