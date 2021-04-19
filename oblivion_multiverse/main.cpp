@@ -19,12 +19,13 @@ std::map<TESObjectREFR*, UInt32> mapTrackedActors;
 bool Cmd_OMClientTick_Execute(COMMAND_ARGS)
 {
 	sendPlayerPOS();
-	incomingPacketHandler();
+	enetSyncHandler();
 	return true;
 }
 
 bool Cmd_OMServerConnect_Execute(COMMAND_ARGS)
 {
+
 	return serverConnect();
 }
 

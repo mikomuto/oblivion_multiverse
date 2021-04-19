@@ -136,6 +136,7 @@
       </ForcedIncludeFiles>
     </ClCompile>
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="om_actors.cpp" />
     <ClCompile Include="om_config.cpp" />
     <ClCompile Include="om_network.cpp" />
   </ItemGroup>
@@ -157,6 +158,7 @@
     <ClInclude Include="..\obse\obse\Script.h" />
     <ClInclude Include="..\obse\obse\Utilities.h" />
     <ClInclude Include="main.h" />
+    <ClInclude Include="om_actors.h" />
     <ClInclude Include="om_config.h" />
     <ClInclude Include="om_network.h" />
   </ItemGroup>

@@ -2,12 +2,12 @@
 
 #include "main.h"
 #include "om_config.h"
-
+#include <om_actors.h>
 
 extern bool initializeClient();
 extern void discardClient();
 extern bool serverConnect();
-extern void incomingPacketHandler();
+extern void enetSyncHandler();
 extern void sendPlayerPOS();
 extern bool serverDisconnect();
 

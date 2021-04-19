@@ -15,6 +15,7 @@
 #include <sstream>
 #include <map>
 #include <iterator>
+#include <WS2tcpip.h>
 
 #define SUPER_VERSION 0
 #define MAIN_VERSION 1
@@ -24,4 +25,4 @@
 
 //externals
 extern IDebugLog gLog;
-
+extern OBSEScriptInterface* g_scriptIntfc;

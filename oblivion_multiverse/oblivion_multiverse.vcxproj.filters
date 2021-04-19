@@ -55,6 +55,9 @@
     <ClCompile Include="om_config.cpp">
       <Filter>Source</Filter>
     </ClCompile>
+    <ClCompile Include="om_actors.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\obse\obse\GameActorValues.h">
@@ -112,6 +115,9 @@
       <Filter>Headers</Filter>
     </ClInclude>
     <ClInclude Include="om_config.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="om_actors.h">
       <Filter>Headers</Filter>
     </ClInclude>
   </ItemGroup>

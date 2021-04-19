@@ -8,32 +8,61 @@ ENetPacket* packet;
 
 bool isConnected = false;
 
-void incomingPacketHandler() {
+void enetSyncHandler() {
 	//check for pending event(incoming packet)
 	enet_host_service(client, &event, 0);
-		switch (event.type)
+	char hrIP[INET_ADDRSTRLEN];
+	if (event.type != NULL) {
+		//convert event host ip address to human readable
+		inet_ntop(AF_INET, &(event.peer->address.host), hrIP, INET_ADDRSTRLEN);
+	}
+	switch (event.type)
+	{
+	case ENET_EVENT_TYPE_RECEIVE:
+		//check packet flag
+		int flag;
 		{
-		case ENET_EVENT_TYPE_RECEIVE:
-			_MESSAGE("A packet of length %u containing %s was received from %s on channel %u.\n",
+			std::string tmpData(((char*)event.packet->data), event.packet->dataLength);
+			std::istringstream is(tmpData);
+			cereal::BinaryInputArchive Archive(is);
+			Archive(flag);
+		}
+		switch (flag) {
+		case 0: {
+			_MESSAGE("received auth packet from %s:%u", hrIP, event.peer->address.port);
+		}
+		case 1: {
+			_MESSAGE("A player position tracking packet of length %u was received from %s:%u:%u",
 				event.packet->dataLength,
-				event.packet->data,
-				event.peer->data,
+				hrIP,
+				event.peer->address.port,
 				event.channelID);
-			/* Clean up the packet now that we're done using it. */
+			//store position data
+			{
+				std::string tmpData(((char*)event.packet->data), event.packet->dataLength);
+				updateActor(tmpData);
+			}
+			// Clean up the packet now that we're done using it
 			enet_packet_destroy(event.packet);
 			break;
-
-		case ENET_EVENT_TYPE_DISCONNECT:
-			_MESSAGE("Server forced disconnect");
-			isConnected = false;
-			/* Reset the peer's client information. */
-			event.peer->data = NULL;
 		}
+		}
+
+
+		/* Clean up the packet now that we're done using it. */
+		enet_packet_destroy(event.packet);
+		break;
+
+	case ENET_EVENT_TYPE_DISCONNECT:
+		_MESSAGE("Server forced disconnect");
+		isConnected = false;
+		/* Reset the peer's client information. */
+		event.peer->data = NULL;
+	}
 }
 
 void sendPlayerPOS() {
 	if (isConnected) {
-		_MESSAGE("connected and running sendPlayerPOS");
 		UInt32 cellID;
 		if ((*g_thePlayer)->parentCell->worldSpace)
 		{
@@ -43,18 +72,16 @@ void sendPlayerPOS() {
 		{
 			cellID = (*g_thePlayer)->parentCell->refID;
 		}
-		// send position using a unreliable packet on channel 1
+		// send position using an unreliable packet
 		std::ostringstream SData;
 		{
 			cereal::BinaryOutputArchive Archive(SData);
-			Archive(OMPlayerPOS, cellID, (*g_thePlayer)->posX, (*g_thePlayer)->posY, (*g_thePlayer)->posZ, (*g_thePlayer)->rotX, (*g_thePlayer)->rotY, (*g_thePlayer)->rotZ);
+			Archive(OMPlayerPOS, (*g_thePlayer)->refID, cellID, (*g_thePlayer)->posX, (*g_thePlayer)->posY, (*g_thePlayer)->posZ, (*g_thePlayer)->rotX, (*g_thePlayer)->rotY, (*g_thePlayer)->rotZ);
 		}
 		std::string Out = SData.str();
 		ENetPacket* packet = enet_packet_create(Out.c_str(), Out.size(), ENET_PACKET_FLAG_UNRELIABLE_FRAGMENT);
 		// queue a packet for the peer over channel id 1
 		enet_peer_send(peer, 1, packet);
-		// flush to send
-		enet_host_flush(client);
 	}
 }
 
@@ -102,7 +129,7 @@ bool serverConnect() {
 			std::ostringstream SData;
 			{
 				cereal::BinaryOutputArchive Archive(SData);
-				Archive(OMIdentity,SUPER_VERSION, MAIN_VERSION, SUB_VERSION, ServerPassword);
+				Archive(OMIdentity, SUPER_VERSION, MAIN_VERSION, SUB_VERSION, ServerPassword);
 			}
 			std::string Out = SData.str();
 			ENetPacket* packet = enet_packet_create(Out.c_str(), Out.size(), ENET_PACKET_FLAG_RELIABLE);
