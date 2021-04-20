@@ -1,12 +1,17 @@
+#pragma once
 
 #include <cstdio>
 #include <ctime>
 #include <iomanip>
 #include <thread>
+#include <WS2tcpip.h>
 
 //external
 #include <enet/enet.h>
 #include <cereal/archives/binary.hpp>
+
+//OBSE
+#include <common/ITypes.h>
 
 #include "om_config.h"
 
