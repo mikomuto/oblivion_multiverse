@@ -1,9 +1,5 @@
 #include "om_config.h"
 
-char ServerPassword[32];
-int ServerPort = 0;
-int MaxClients = 0;
-
 void OMLoadConfig()
 {
 	//config file
@@ -33,11 +29,11 @@ void OMLoadConfig()
 		const char* pwdValue = ini.GetValue("MAIN",
 			"PASSWORD", NULL);
 		if (strlen(pwdValue) > 31) {
-			strncpy_s(ServerPassword, pwdValue, 32);
+			strncpy(ServerPassword, pwdValue, 32);
 			ServerPassword[31] = '\0';   /* null character manually added */
 		}
 		else {
-			strncpy_s(ServerPassword, pwdValue, strlen(pwdValue));
+			strncpy(ServerPassword, pwdValue, strlen(pwdValue));
 		}
 	}
 	//if we don't have a config, make it
@@ -45,13 +41,13 @@ void OMLoadConfig()
 		//initial serverPort
 		ServerPort = 41805;
 		char buffer[33];
-		_itoa_s(ServerPort, buffer, 10);
+		snprintf(buffer, 12, "%d", ServerPort);
 		ini.SetValue("MAIN", "PORT", buffer);
 
 		//initial max clients
 		MaxClients = 32;
 		char buffer_mc[3];
-		_itoa_s(MaxClients, buffer_mc, 10);
+		snprintf(buffer_mc, 12, "%d", MaxClients);
 		ini.SetValue("MAIN", "MAX_CLIENTS", buffer_mc);
 
 		//initial password
@@ -71,12 +67,12 @@ void OMUpdateConfig()
 	if (!ie) {
 		//update serverPort
 		char buffer[33];
-		_itoa_s(ServerPort, buffer, 10);
+		snprintf(buffer, 12, "%d", ServerPort);
 		ini.SetValue("MAIN", "PORT", buffer);
 
 		//update max clients
 		char buffer_mc[3];
-		_itoa_s(MaxClients, buffer_mc, 10);
+		snprintf(buffer_mc, 12, "%d", MaxClients);
 		ini.SetValue("MAIN", "MAX_CLIENTS", buffer_mc);
 
 		//update password

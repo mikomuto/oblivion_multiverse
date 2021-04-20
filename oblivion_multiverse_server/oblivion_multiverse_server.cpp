@@ -9,18 +9,16 @@ std::map<enet_uint32, bool> mapIsAuth;
 std::map<enet_uint32, std::string> mapActors;
 
 FILE* serverlog;
-errno_t err;
+int err;
 
 void serverOutput(char* message)
 {
 	//output to console
-	printf(message);
+	printf("%.1s",message);
 	//output to logfile
-	if ((err = fopen_s(&serverlog, "oblivion_multiverse_server_log.txt", "a")) == 0)
-	{
-		fprintf(serverlog, "%s", message);
-		fclose(serverlog);
-	}
+	serverlog = fopen("oblivion_multiverse_server_log.txt", "a");
+	fprintf(serverlog, "%s", message);
+	fclose(serverlog);
 }
 
 void syncActors() {
@@ -46,10 +44,9 @@ void syncActors() {
 int main()
 {
 	//wipe log file
-	if ((err = fopen_s(&serverlog, "oblivion_multiverse_server_log.txt", "w")) == 0)
-	{
-		fclose(serverlog);
-	}
+	serverlog = fopen("oblivion_multiverse_server_log.txt", "w");
+	fclose(serverlog);
+	
 
 	//load ini
 	OMLoadConfig();
@@ -89,7 +86,7 @@ int main()
 	}
 
 	char message[128]{};
-	sprintf_s(message, "Oblivion Multiverse Server %i.%i.%i \"%s\"\n   %s\n--------------------------\n", SUPER_VERSION, MAIN_VERSION, SUB_VERSION, RELEASE_CODENAME, RELEASE_COMMENT);
+	snprintf(message, 128, "Oblivion Multiverse Server %i.%i.%i \"%s\"\n   %s\n--------------------------\n", SUPER_VERSION, MAIN_VERSION, SUB_VERSION, RELEASE_CODENAME, RELEASE_COMMENT);
 	serverOutput(message);
 
 	//start actor sync thread
@@ -106,7 +103,7 @@ int main()
 			switch (event.type)
 			{
 			case ENET_EVENT_TYPE_CONNECT: {
-				sprintf_s(message, "A new client connected from %s:%u\n", hrIP, event.peer->address.port);
+				snprintf(message, 128, "A new client connected from %s:%u\n", hrIP, event.peer->address.port);
 				serverOutput(message);
 				break;
 			}
@@ -114,7 +111,7 @@ int main()
 				//check if authenticated
 				std::map<enet_uint32, bool>::iterator itr = mapIsAuth.find(event.peer->address.host);
 				if (itr == mapIsAuth.end()) {
-					sprintf_s(message, "%s:%u is not authenticated\n", hrIP, event.peer->address.port);
+					snprintf(message, 128, "%s:%u is not authenticated\n", hrIP, event.peer->address.port);
 					serverOutput(message);
 				}
 				int flag;
@@ -131,7 +128,7 @@ int main()
 				}
 				switch (flag) {
 				case 0: {
-					sprintf_s(message, "received auth packet from %s:%u\n", hrIP, event.peer->address.port);
+					snprintf(message, 128, "received auth packet from %s:%u\n", hrIP, event.peer->address.port);
 					serverOutput(message);
 					{
 						std::string tmpData(((char*)event.packet->data), event.packet->dataLength);
@@ -147,7 +144,7 @@ int main()
 						if (strcmp(cPassword, ServerPassword) == 0) {
 							//sprintf_s(message, "correct password\n");
 							//serverOutput(message);
-							sprintf_s(message, "%s:%u is now authenticated\n", hrIP, event.peer->address.port);
+							snprintf(message, 128, "%s:%u is now authenticated\n", hrIP, event.peer->address.port);
 							serverOutput(message);
 							//add host to auth map
 							mapIsAuth.insert(std::pair<enet_uint32, bool>(event.peer->address.host, true));;
@@ -157,7 +154,7 @@ int main()
 						}
 						else {
 							//TODO send client error message before disconnet
-							sprintf_s(message, "%s:%u Wrong password\n", hrIP, event.peer->address.port);
+							snprintf(message, 128, "%s:%u Wrong password\n", hrIP, event.peer->address.port);
 							serverOutput(message);
 							enet_peer_disconnect(event.peer, 0);
 							// Clean up the packet now that we're done using it
@@ -167,7 +164,7 @@ int main()
 					}
 					else {
 						//TODO send client error message before disconnet
-						sprintf_s(message, "%s:%u Version mismatch\n", hrIP, event.peer->address.port);
+						snprintf(message, 128, "%s:%u Version mismatch\n", hrIP, event.peer->address.port);
 						serverOutput(message);
 						enet_peer_disconnect(event.peer, 0);
 						// Clean up the packet now that we're done using it
@@ -191,7 +188,7 @@ int main()
 					break;
 				}
 				default: {
-					sprintf_s(message, "A unkown packet of length %u containing %s was received from %s:%u:%u\n",
+					snprintf(message, 128, "A unkown packet of length %zu containing %s was received from %s:%u:%u\n",
 						event.packet->dataLength,
 						event.packet->data,
 						hrIP,
@@ -206,7 +203,7 @@ int main()
 				}
 			}
 			case ENET_EVENT_TYPE_DISCONNECT: {
-				sprintf_s(message, "%s:%u:%u disconnected\n", hrIP, event.peer->address.port, event.channelID);
+				snprintf(message, 128, "%s:%u:%u disconnected\n", hrIP, event.peer->address.port, event.channelID);
 				serverOutput(message);
 				/* Reset the peer's client information. */
 				event.peer->data = NULL;
