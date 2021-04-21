@@ -28,7 +28,7 @@ void OMLoadConfig()
 
 		// get port
 		const char* pValue = ini.GetValue("MAIN",
-			"PORT", "41805");
+			"PORT", "6364");
 		ServerPort = atoi(pValue);
 
 		// get password
@@ -59,7 +59,7 @@ void OMLoadConfig()
 		ini.SetValue("MAIN", "SERVER_ADDRESS", "127.0.0.1");
 
 		//initial serverPort
-		ServerPort = 41805;
+		ServerPort = 6364;
 		char buffer[33];
 		_itoa_s(ServerPort, buffer, 10);
 		ini.SetValue("MAIN", "PORT", buffer);

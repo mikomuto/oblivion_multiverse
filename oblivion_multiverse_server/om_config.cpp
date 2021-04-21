@@ -21,7 +21,7 @@ void OMLoadConfig()
 
 		// get port
 		const char* pValue = ini.GetValue("MAIN",
-			"PORT", "6434");
+			"PORT", "6364");
 		ServerPort = atoi(pValue);
 
 		// get max clients
