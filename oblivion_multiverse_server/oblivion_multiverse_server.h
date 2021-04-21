@@ -1,18 +1,20 @@
-#pragma once
+#ifdef _WIN32
+#define WIN32_LEAN_AND_MEAN 1
+#include <WS2tcpip.h>
+#else
+#include <arpa/inet.h>
+#endif
 
 #include <cstdio>
 #include <ctime>
 #include <iomanip>
 #include <thread>
-#include <WS2tcpip.h>
 
 //external
 #include <enet/enet.h>
 #include <cereal/archives/binary.hpp>
 
-//OBSE
-#include <common/ITypes.h>
-
+//internal
 #include "om_config.h"
 
 #define MAXCLIENTS 12

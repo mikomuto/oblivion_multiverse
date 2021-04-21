@@ -51,3 +51,6 @@ Debug/
 # external
 include/
 library/
+oblivion_multiverse_server/oblivion_multiverse_server
+*.txt
+*.ini

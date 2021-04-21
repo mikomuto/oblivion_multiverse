@@ -1,6 +1,6 @@
 #pragma once
 
-#include "include/simpleini-4.17/SimpleIni.h"
+#include "simpleini-4.17/SimpleIni.h"
 
 //externals
 extern void OMLoadConfig();
