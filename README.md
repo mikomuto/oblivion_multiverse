@@ -11,3 +11,11 @@ Goals:
 * nearby alerted npcs/mobs sync
 * sync chest unlock
 * sync door unlock/gate open
+
+
+
+
+
+Linux server:
+install libenet7 dependency
+ *sudo apt-get install libenet7
